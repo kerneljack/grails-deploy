@@ -11,6 +11,7 @@ def doDeploy():
     lockFile = 'deploy_lockfile'
     if os.path.exists(lockFile) == False:
         try:
+            cwd = os.getcwd()
             print ('creating lock file')
             with open (lockFile, 'w') as f:
                 f.close()
@@ -31,7 +32,6 @@ def doDeploy():
             devPath = '/home/vagrant/dev/grails-petclinic-master'
             if deploy == 'YES':
                 # cd to dev directory, pull correct version from repo
-                cwd = os.getcwd()
                 os.chdir(devPath)
                 subprocess.call(['git', 'checkout', 'tags/' + version])
                 subprocess.call(['sh', './grailsw', 'war'])
