@@ -39,13 +39,16 @@ def doDeploy():
                 subprocess.call(['sudo', 'cp', devPath + '/target/petclinic-' + version + '.war', '/var/lib/tomcat8/webapps/petclinic.war'])
                 subprocess.call(['sudo', 'systemctl', 'restart', 'tomcat8'])
 
-            os.chdir(cwd)
+                os.chdir(cwd)
 
-            # disable deployments so we don't keep re-deploying endlessly! 
-            data['deploy'] = 'NO'
-            with open("deploy.json", "w") as outfile:
-                json.dump(data, outfile)
-            outfile.close()
+                # disable deployments so we don't keep re-deploying endlessly! 
+                data['deploy'] = 'NO'
+                with open("deploy.json", "w") as outfile:
+                    json.dump(data, outfile)
+                outfile.close()
+
+                # commit new deploy.json to git so everyone knows deploy is now finished and disabled
+                subprocess.call(['git', 'commit', 'deploy.json', '-m', '"disabling deploys"'])
 
             os.remove(lockFile)
         except: 
