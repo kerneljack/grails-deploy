@@ -35,7 +35,7 @@ def doDeploy():
                 subprocess.call(['git', 'checkout', 'tags/' + version])
                 subprocess.call(['sh', './grailsw', 'war'])
                 subprocess.call(['sudo', 'rm', '-rf', '/var/lib/tomcat8/webapps/petclinic*'])
-                subprocess.call(['sudo', 'cp', devPath + '/target/petclinic-' + version + '.war', '/var/lib/tomcat8/webapps'])
+                subprocess.call(['sudo', 'cp', devPath + '/target/petclinic-' + version + '.war', '/var/lib/tomcat8/webapps/'])
 
             os.chdir(cwd)
             os.remove(lockFile)
