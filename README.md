@@ -121,4 +121,3 @@ Version: 1.0
 
 The `deploy.json` file is modified as soon as the deploy is done so that it doesn’t keep trying to deploy it continuously. It’s also pushed back into the repository so that anyone using the repository will have to do a `pull`. This lets them know that the deploy was completed as well. I also use a `lockfile` to make sure that multiple instances of the deployment python script don’t try to run at the same time.
 
-
