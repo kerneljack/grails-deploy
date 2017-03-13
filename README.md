@@ -9,9 +9,9 @@ This is a tool to manage remote, unattended deployments of a Grails app. It uses
 
 We use 2 separate Git repositories and a **control** application written in Python to accomplish this. So altogether we have:
 
-* Grails app repository
-* Deployment control app repository
-* Deployment Control Python app
+* Grails App Repository
+* Deployment Control App Repository
+* Deployment Control Python App
 
 ### 1. Grails App Repository
 
@@ -27,25 +27,23 @@ To see the current tags on a repo, use the `--decorate` option to `git log`:
 
 `$ git log --decorate`
 
-The **Grails app repository** is what holds the actual application while 
-
 ### 2. Deployment Control Repository
 
-The **Deployment control repository (DCR)** is what determines which *version* of the app gets deployed. This repository simply contains a `deploy.json` file and a deployment control app. The `deploy.json` file has the following format:
+The **Deployment Control Repository (DCR)** is what determines which *version* of the app gets deployed. This repository simply contains a `deploy.json` file and a deployment control app. The `deploy.json` file has the following format:
 
 ```
 { "deploy": "(YES|NO)", "version": "version number" }
 ```
 
-The **Deployment control repository (DCR)** will have restricted access to a small group of people who are allowed to control the deployment process. You can use the Collaborators feature to control the list of people who can push/pull from the repo.
+The **DCR** will have restricted access to a small group of people who are allowed to control the deployment process. You can use the Collaborators feature to control the list of people who can push/pull from the repo.
 
 ### 3. Deployment Control Python app
 
-The deployment control app (`deploy.py`) reads the `deploy.json` file and checks to see if the value of the `deploy` field is **YES** (upper case only). If so, it goes ahead and deploys the **version** specified by the `version` field.
+The Deployment Control App (`deploy.py`) reads the `deploy.json` file and checks to see if the value of the `deploy` field is **YES** (upper case only). If so, it goes ahead and deploys the **version** specified by the `version` field.
 
-We run the python app periodically using Cron (every minute) in my case.
+We run the app periodically using Cron (every minute) in my case.
 
-Using these 3 things in combination we achieve SSH-less remote deployment of our app. Note that this deployment is further restricted to authorised users only.
+Using these 3 things in combination we achieve SSH-less remote deployment of our app. Note that this deployment is further restricted to authorised users only as described above.
 
 ## How do we test it? 
 
@@ -72,7 +70,7 @@ Once logged on to the **vagrant** account using `vagrant ssh`, I installed OpenJ
 
 `$ sudo apt-get install openjdk-8-jdk tomcat8`
 
-I created 2 separate directories: one for the app repository itself, and another for the Deployment control repository. I named these directories **dev** and **dcr** respectively.
+I created 2 separate directories: one for the **app repository** itself, and another for the **Deployment Control Repository**. I named these directories **dev** and **dcr** respectively.
 
 I checked out a version of the app into the `dev` repo and then I modified the following file slightly to make it more obvious which version we were looking at in the browser:
 
@@ -101,7 +99,7 @@ I then proceeded to checkout the Deployment Control app into the `dcr` directory
 
 I ran the `deploy.py` manually at first to make sure that it would work. The python app copies the `war` file into the Tomcat `webapps/` directory, making it available at `http://<VM IP>/petclinic`. 
 
-The index page displayed showed the correct version of my app (in this case it was upgraded to Version 2.0). Once I confirmed this was working, I proceeded to install a cronjob which ran every minute as follows:
+The index page displayed showed the correct version of my app. Once I confirmed this was working, I proceeded to install a cronjob which ran every minute as follows:
 
 `*  *  *  *  *  cd ~/dcr/grails-deploy && ./deploy.py >> deploy.log 2>&1`
 
@@ -119,5 +117,7 @@ Deploy: YES
 Version: 1.0
 ```
 
-The `deploy.json` file is modified as soon as the deploy is done so that it doesn’t keep trying to deploy it continuously. It’s also pushed back into the repository so that anyone using the repository will have to do a `pull`. This lets them know that the deploy was completed as well. I also use a `lockfile` to make sure that multiple instances of the deployment python script don’t try to run at the same time.
+The `deploy.json` file is modified as soon as the deploy is done so that it doesn’t keep trying to deploy it continuously.
+
+It’s also pushed back into the repository so that anyone using the repository will have to do a `pull`. This lets them know that the deploy was completed as well. I also use a `lockfile` to make sure that multiple instances of the deployment python script don’t try to run at the same time.
 
