@@ -49,6 +49,7 @@ def doDeploy():
 
                 # commit new deploy.json to git so everyone knows deploy is now finished and disabled
                 subprocess.call(['git', 'commit', 'deploy.json', '-m', '"disabling deploys"'])
+                subprocess.call(['git', 'push'])
 
             os.remove(lockFile)
         except: 
