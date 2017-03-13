@@ -96,7 +96,7 @@ Now we have a version 1.0 of our app in the repo. I proceeded to change the `ind
 I then proceeded to checkout the Deployment Control app into the `dcr` directory. I modified the `deploy.json` as follows:
 
 ```
-{"version": "2.0", "deploy": "YES"}
+{"version": "1.0", "deploy": "YES"}
 ```
 
 I ran the `deploy.py` manually at first to make sure that it would work. The python app copies the `war` file into the Tomcat `webapps/` directory, making it available at `http://<VM IP>/petclinic`. 
